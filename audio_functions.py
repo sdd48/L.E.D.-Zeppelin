@@ -13,7 +13,12 @@ import numpy as np
 # so from index 50N/fs to 250N/fs 
 
 # Returns energy of bass section in song interval
-# returns [bass of fft(ar)] dot [i^(weight) for i in range(len(ar))] 
+# returns [bass of fft(ar)] dot [i^(weight) for i in range(len(ar))]
+#[ar] is the frequency domain represnetation of the interval
+#[fs] is the  number of samples per second. The value ar[i] is the
+#coefficient for [i*fs/N] hz
+#[weight] is an optional weight vector such that the function returns
+#[bass of fft(ar)] dot [i^(weight) for i in range(len(ar))]
 def bass_of_interval(ar, fs, weight=0):
     #print(len(ar))
     c = rfft(ar)
@@ -23,7 +28,8 @@ def bass_of_interval(ar, fs, weight=0):
     
     return np.linalg.norm(np.array(c[start:end]))
     
-# Returns energy of trebble section in song interval    
+# Returns energy of trebble section in song interval
+#Parameters as described in bass_of_interval
 def treble_of_interval(ar, fs, weight=0):
     c = rfft(ar)
     N = len(c)
