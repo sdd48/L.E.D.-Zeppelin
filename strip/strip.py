@@ -1,6 +1,7 @@
 import socket
 import random
 import time
+import numpy as np
 
 class Strip(object):
     def __init__(self,ip="192.168.1.188", n=150,port=5120):
@@ -24,8 +25,12 @@ class Strip(object):
     # Arr is nx3
     def setStrip(self, arr):
         assert len(arr) == self.numleds
-        for i,tup in enumerate(arr):
-            self.setPixel(i, tuple(tup))
+        if isinstance(arr, np.ndarray):
+            self.strip = bytearray(arr.reshape(-1).astype(np.dtype('B')))
+        else:
+            for i,tup in enumerate(arr):
+                self.setPixel(i, tuple(tup))
+
 
     def setSame(self, r, g=None, b=None):
         for i in range(self.numleds):
