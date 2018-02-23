@@ -7,8 +7,9 @@ import numpy
 exitFlag = 0
 
 class StripWorker (threading.Thread):
-    def __init__(self, name):
+    def __init__(self, name="LED Strip Worker", fsample=44100):
         threading.Thread.__init__(self, name=name)
+        self.fsample = fsample
         self.name = name
         self.to_proc = Queue.Queue()
         self.work = True

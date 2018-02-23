@@ -16,7 +16,7 @@ wf = wave.open(sys.argv[1], 'rb')
 p = pyaudio.PyAudio()
 
 # Create strip thread
-worker = strip_worker.StripWorker("Light Strip Worker")
+worker = strip_worker.StripWorker(name="Light Strip Worker", fsample=wf.getframerate())
 worker.start()
 
 # define callback (2)
