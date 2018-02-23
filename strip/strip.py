@@ -21,9 +21,15 @@ class Strip(object):
         self.strip[3*n+2] = b
 
 
-    def setAll(self, r, g=None, b=None):
+    # Arr is nx3
+    def setStrip(self, arr):
+        assert len(arr) == self.numleds
+        for i,tup in enumerate(arr):
+            self.setPixel(i, tuple(tup))
+
+    def setSame(self, r, g=None, b=None):
         for i in range(self.numleds):
-            self.setPixel(r,g,b)
+            self.setPixel(i, r,g,b)
 
 
     def white(self, bright=255):
