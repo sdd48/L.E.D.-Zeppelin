@@ -48,7 +48,10 @@ def basic_rgb(bass,treble):
     if(len(treble) != N):
         raise ValueError
 
-    arr = [(bass[i]*norm_c,0,treble[i]*norm_c) for i in range(N)] + np.random.normal(0,3,N)
+    #Best guess at max magniatude rn
+    norm_c = 255 / float(4.0 * 10**7)
+
+    arr = np.add([(bass[i]*norm_c,0,treble[i]*norm_c) for i in range(N)], np.random.normal(0,3,(N,3)) )
     return map(lambda a:map(int,a),arr)
 
 #Returns [0,1] num representing energy between frequencies sfreq and efreq
@@ -83,3 +86,7 @@ MAX_FREQ = 20000
 def freq_per_led(ar, fs, n):
     freq_ranges = np.logspace(np.sqrt(MIN_FREQ), np.sqrt(MAX_FREQ), num=n+1, base=2) #n+1 for n intervals
     return [scalar_to_rainbow(i,n)*energy_of_freq(ar,fs,freq_ranges[i],freq_ranges[i+1]) for i in range(n)]
+
+#Slowly pulse from red to green to blue and back
+def slow_pulse():
+    pass

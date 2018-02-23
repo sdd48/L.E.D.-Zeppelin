@@ -39,7 +39,7 @@ treble = [treble_of_interval(a[i*n:(i+1)*n], fs) for i in range(song_length * 10
 
 RGB_tuples = basic_rgb(bass, treble)
 
-print(RGB_tuples)
+#print(RGB_tuples)
 
 #out = open(save_name, "w")
 #pickle.dump(a,out)
