@@ -56,7 +56,6 @@ class Strip(object):
     def rainbow(self, wait):
         for x in range(256):
             for i in range(self.numleds):
-                #strip.setPixelColor(i, Wheel((i+j) & 255));
                 self.setPixel(i, self.wheel((x+i) & 255))
             self.update()
             time.sleep(wait)
