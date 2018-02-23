@@ -5,6 +5,7 @@ import wave
 import time
 import sys
 import strip_worker
+import numpy as np
 
 if len(sys.argv) < 2:
     print("Plays a wave file.\n\nUsage: %s filename.wav" % sys.argv[0])
@@ -22,7 +23,8 @@ worker.start()
 # define callback (2)
 def callback(in_data, frame_count, time_info, status):
     data = wf.readframes(frame_count)
-    worker.addFrame(data)
+    samps = np.fromstring(data, np.dtype('u'+str(wf.getsampwidth()))).reshape((wf.getnchannels(), -1))
+    worker.addFrame(samps)
 
     return (data, pyaudio.paContinue)
 

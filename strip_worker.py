@@ -30,7 +30,6 @@ class StripWorker (threading.Thread):
             rgb = freq_per_led(a[0], self.fsample, strip.numleds) #a[0] is first channel
             strip.setStrip(rgb)
             strip.update()
-
         print("Exiting " + self.name)
 
 
