@@ -48,4 +48,5 @@ def basic_rgb(bass,treble):
     #Best guess at max magniatude rn
     norm_c = 255 / float(4.0 * 10**7)
       
-    return [(int(bass[i]*norm_c),0,int(treble[i]*norm_c)) for i in range(N)]
+    arr = [(bass[i]*norm_c,0,treble[i]*norm_c) for i in range(N)] + np.random.normal(0,3,N)  
+    return map(lambda a:map(int,a),arr)
