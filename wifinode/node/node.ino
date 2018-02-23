@@ -57,6 +57,6 @@ void loop() {
     }
     
   }
-  delay(10);
+  yield();
 
 }
