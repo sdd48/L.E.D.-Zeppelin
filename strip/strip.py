@@ -21,6 +21,8 @@ class Strip(object):
         for i in range(3*self.numleds):
             self.strip[i] = 255
 
+    def clear(self):
+        self.white(0)
 
     def update(self):
         self.sock.sendto(self.strip, (self.destip, self.port))
