@@ -57,8 +57,8 @@ def basic_rgb(bass,treble):
 #Returns [0,1] num representing energy between frequencies sfreq and efreq
 def energy_of_freq(ar, fs, sfreq, efreq):
     c = rfft(ar)
-    start = sfreq * len(c) / fs
-    end = efreq * len(c) / fs
+    start = int(sfreq * len(c) / fs)
+    end = int(efreq * len(c) / fs)
     return max(np.linalg.norm(np.array(c[start:end])) * 4.0 * 10**7, 1)
 
 def scalar_to_rainbow(i, n):
@@ -79,7 +79,10 @@ def scalar_to_rainbow(i, n):
         rgb = (y, 0, 255)
     else:
         rgb = (255, 0, 255)
-    return np.array(rgb)
+    return np.array(rgb, dtype=int)
+
+def rainbow(n):
+    return [scalar_to_rainbow(i,n) for i in range(n)]
 
 MIN_FREQ = 20
 MAX_FREQ = 20000
