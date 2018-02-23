@@ -5,6 +5,7 @@ import wave
 import time
 import sys
 import strip_worker
+import numpy as np
 
 if len(sys.argv) < 2:
     print("Plays a wave file.\n\nUsage: %s filename.wav" % sys.argv[0])
@@ -16,13 +17,14 @@ wf = wave.open(sys.argv[1], 'rb')
 p = pyaudio.PyAudio()
 
 # Create strip thread
-worker = strip_worker.StripWorker(fwidth=wf.getsampwidth(), name="Light Strip Worker", fsample=wf.getframerate())
+worker = strip_worker.StripWorker(name="Light Strip Worker", fsample=wf.getframerate())
 worker.start()
 
 # define callback (2)
 def callback(in_data, frame_count, time_info, status):
     data = wf.readframes(frame_count)
-    worker.addFrame(data)
+    samps = np.fromstring(data, np.dtype('u'+str(wf.getsampwidth()))).reshape((wf.getnchannels(), -1))
+    worker.addFrame(samps)
 
     return (data, pyaudio.paContinue)
 
