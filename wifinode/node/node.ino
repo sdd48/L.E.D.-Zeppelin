@@ -34,6 +34,7 @@ void setup() {
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
+  Udp.begin(PORT);
 }
 
 void loop() {
@@ -56,5 +57,6 @@ void loop() {
     }
     
   }
+  delay(10);
 
 }
