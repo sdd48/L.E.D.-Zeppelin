@@ -1,5 +1,5 @@
 import socket
-
+import random
 
 class Strip(object):
     def __init__(self,ip="192.168.1.188", n=150,port=5120):
@@ -23,6 +23,11 @@ class Strip(object):
 
     def clear(self):
         self.white(0)
+
+    def random(self):
+        for i in range(3*self.numleds):
+            self.strip[i] = random.randrange(255)
+
 
     def update(self):
         self.sock.sendto(self.strip, (self.destip, self.port))
