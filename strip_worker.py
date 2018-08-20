@@ -5,31 +5,41 @@ import queue
 import numpy
 
 from audio_functions import *
-from strip.strip import Strip
-strip = Strip()
+from strips.gui_strip import GuiStrip
+import sound_sinks.beat_sink
+
+#from strip.strip import Strip
 
 exitFlag = 0
 
 class StripWorker (threading.Thread):
-    def __init__(self, name="LED Strip Worker", fsample=44100):
+    def __init__(self, swidth, fsample=44100, name="LED Strip Worker"):
         threading.Thread.__init__(self, name=name)
+        self.swidth = swidth
         self.fsample = fsample
         self.name = name
         self.to_proc = queue.Queue()
         self.work = True
 
     def run(self):
+        nleds = 150
+        strip = GuiStrip(nleds)
+        sink = sound_sinks.beat_sink.BeatSink(nleds, self.fsample, self.swidth)
         print("Starting " + self.name)
         a = []
         while(self.work):
+            # TODO use condition var
             while self.to_proc.empty():
-                time.sleep(.1)
+                time.sleep(.001)
             with self.to_proc.mutex:
                 a = list(self.to_proc.queue)
                 self.to_proc.queue.clear()
-            rgb = freq_per_led(a[0], self.fsample, strip.numleds) #a[0] is first channel
-            strip.setStrip(rgb)
-            strip.update()
+
+            for w in a:
+                sink.consume(w)
+                if sink.canProduce():
+                    strip.setStrip(sink.produce())
+                    strip.update()
         print("Exiting " + self.name)
 
 
@@ -37,5 +47,5 @@ class StripWorker (threading.Thread):
         self.work = False
 
 
-    def addFrame(self, frame):
-        self.to_proc.put(frame)
+    def addWindow(self, window):
+        self.to_proc.put(window)
