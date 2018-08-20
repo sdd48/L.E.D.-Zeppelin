@@ -1,5 +1,11 @@
+<<<<<<< HEAD:strips/test.py
 from strips import gui_strip
 from strips import led_strip
+=======
+import strip
+import gui_strip
+import led_strip
+>>>>>>> cdf1f22816fae67429cf5f189bf09b67b1fb019e:strip/test.py
 import numpy as np
 
 #s = gui_strip.LEDStrip()
