@@ -18,10 +18,9 @@ while 1:
     strip.setSame(counter % 255, 0,255 - (counter % 255))
     counter += stage
     if counter % 255 == 0:
+    	time.sleep(.1)
     	stage = stage * -1
     strip.update()
-
-#print(rgbs[0:5])
 
 #plt.plot(range(len(rgbs)), rgbs[:,0],'r')
 #plt.show()
