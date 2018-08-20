@@ -4,13 +4,10 @@ import time
 import numpy as np
 
 class Strip(object):
-    def __init__(self,ip="192.168.1.188", n=150,port=5120):
+    def __init__(self, n=150):
         self.numleds = n
-        self.port = port
-        self.destip = ip
         # Array of RGB
         self.strip = bytearray(3*n)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
 
 
     def setPixel(self, n, r, g=None, b=None):
@@ -50,7 +47,7 @@ class Strip(object):
 
 
     def update(self):
-        self.sock.sendto(self.strip, (self.destip, self.port))
+        raise NotImplementedError("This is a base class")
 
 
     def rainbow(self, wait):
@@ -59,6 +56,7 @@ class Strip(object):
                 self.setPixel(i, self.wheel((x+i) & 255))
             self.update()
             time.sleep(wait)
+
 
     def wheel(self, wheelpos):
         wheelpos = 255 -wheelpos
