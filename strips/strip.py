@@ -12,7 +12,7 @@ class Strip(object):
 
     def setPixel(self, n, r, g=None, b=None):
         tup = r
-        if g == None:
+        if g is None:
             r, g, b = tup
         self.strip[3*n] = r
         self.strip[3*n+1] = g
