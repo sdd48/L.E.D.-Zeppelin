@@ -21,13 +21,15 @@ class StripWorker (threading.Thread):
 
   def run(self):
     nleds = 150
+    lp_alpha = 0.95
+    max_upper = 10.0 # Twice the average power
+
+    avg_pow = 0.0
     strip = LEDStrip(nleds)
 
     print("Starting " + self.name)
     a = []
     counter = 0
-    r, g, b = self.randColor(strip)
-
     while(self.work):
       # TODO use condition var
       while self.to_proc.empty():
@@ -36,25 +38,20 @@ class StripWorker (threading.Thread):
         a = list(self.to_proc.queue)
         self.to_proc.queue.clear()
 
-      thresh = 3.0
       counter += 1
-      for w in a:
-        power = np.linalg.norm(w)**2/len(w)
-        if (power > thresh):
-          r, g, b = self.randColor(strip)
+      power = np.linalg.norm(a[0])**2/len(a[0])
+      #print(power)
+      # crude low pass
+      r,g,b = strip.wheel(counter % 256)
+      upper = max_upper*avg_pow
+      res = np.interp(power, [0, upper], [0, 1.0])
+      avg_pow = lp_alpha*avg_pow + (1.0-lp_alpha)*power
+      print(power, avg_pow)
+      up2 = (int(res*r), int(res*g), int(res*b))
+      strip.setSame(up2)
+      strip.update()
 
-        res = np.interp(power, [0, 1.5], [0, 1.0])
-        up2 = (int(res*r), int(res*g), int(res*b))
-        print(power)
-        strip.setSame(up2)
-        strip.update()
-        break
-      print("Exiting " + self.name)
-
-
-
-  def randColor(self, strip):
-    return strip.wheel(np.random.randint(0, 256) % 256)
+    print("Exiting " + self.name)
 
 
   def stop(self):
