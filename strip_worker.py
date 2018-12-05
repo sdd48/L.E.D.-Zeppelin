@@ -22,7 +22,7 @@ class StripWorker (threading.Thread):
   def run(self):
     nleds = 150
     lp_alpha = 0.95
-    max_upper = 10.0 # Twice the average power
+    max_upper = 5.0 # Twice the average power
 
     avg_pow = 0.0
     strip = LEDStrip(nleds)
