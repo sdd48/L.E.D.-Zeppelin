@@ -2,13 +2,13 @@
 #include <WiFiUdp.h>
 #include <Adafruit_NeoPixel.h>
 
-#define LED_PIN D8
+#define LED_PIN 15
 
 #define SSID "LAN Solo"
 #define PASS "aaronisawesome"
 #define PORT 5120
 
-#define NUM_LEDS 150
+#define NUM_LEDS 300
 #define BUF_SIZE (NUM_LEDS*3)
 
 uint8_t incoming[BUF_SIZE];
@@ -39,7 +39,7 @@ void setup() {
 
 void loop() {
   int packetSize = Udp.parsePacket();
-  if (packetSize) //got packet
+  if (packetSize > 0) //got packet
   {
     // receive incoming UDP packets
     Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());

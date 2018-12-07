@@ -20,9 +20,9 @@ class StripWorker (threading.Thread):
     self.work = True
 
   def run(self):
-    nleds = 150
-    lp_alpha = 0.95
-    max_upper = 5.0 # Twice the average power
+    nleds = 300
+    lp_alpha = 0.97
+    max_upper = 10.0 # Twice the average power
 
     avg_pow = 0.0
     strip = LEDStrip(nleds)
@@ -49,7 +49,8 @@ class StripWorker (threading.Thread):
       print(power, avg_pow)
       up2 = (int(res*r), int(res*g), int(res*b))
       strip.setSame(up2)
-      strip.update()
+      while True:
+        strip.update()
 
     print("Exiting " + self.name)
 
