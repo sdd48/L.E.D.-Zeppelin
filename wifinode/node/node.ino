@@ -11,24 +11,32 @@
 #define NUM_LEDS 300
 #define BUF_SIZE (NUM_LEDS*3)
 
+// Watchdog timeout
+#define WDT_MS 2000
+
 uint8_t incoming[BUF_SIZE];
+
+const char RESP_OKAY[] = "OKAY";
+const char RESP_FAIL[] = "FAIL";
 
 WiFiUDP Udp;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 void setup() {
   // put your setup code here, to run once:
+  ESP.wdtEnable(WDT_MS);
   Serial.begin(115200);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
-  delay(10);
-  WiFi.begin(SSID, PASS);
 
+  WiFi.begin(SSID, PASS);
   Serial.print("Connecting");
   while (WiFi.status() != WL_CONNECTED)
   {
+    ESP.wdtFeed();
     delay(500);
     Serial.print(".");
+
   }
   Serial.println();
 
@@ -38,25 +46,27 @@ void setup() {
 }
 
 void loop() {
+  ESP.wdtFeed();
   int packetSize = Udp.parsePacket();
   if (packetSize > 0) //got packet
   {
     // receive incoming UDP packets
-    Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
+    //Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
     int len = Udp.read(incoming, BUF_SIZE);
     //Serial.printf("UDP packet contents: %s\n", incoming);
-
+    delay(1);
     if (len == BUF_SIZE) {
-      Serial.println("got update");
+      //Serial.println("got update");
       for (int i=0; i < NUM_LEDS; i++) {
         strip.setPixelColor(i, incoming[3*i], incoming[3*i+1], incoming[3*i+2]);
       }
+      yield();
       strip.show();
-    } else {
-      Serial.println("Error, wrong buf size");
     }
     
   }
-  yield();
+  delay(1);
 
 }
+
+
