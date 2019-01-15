@@ -49,8 +49,8 @@ class StripWorker (threading.Thread):
       print(power, avg_pow)
       up2 = (int(res*r), int(res*g), int(res*b))
       strip.setSame(up2)
-      while True:
-        strip.update()
+
+      strip.update()
 
     print("Exiting " + self.name)
 
