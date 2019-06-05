@@ -5,6 +5,7 @@ import queue
 import numpy as np
 
 from strips.led_strip import LEDStrip
+from strips.gui_strip import GuiStrip
 
 #from strip.strip import Strip
 
@@ -21,11 +22,11 @@ class StripWorker (threading.Thread):
 
   def run(self):
     nleds = 300
-    lp_alpha = 0.97
+    lp_alpha = 0.995
     max_upper = 10.0 # Twice the average power
 
     avg_pow = 0.0
-    strip = LEDStrip(nleds)
+    strip = GuiStrip(nleds)
 
     print("Starting " + self.name)
     a = []
