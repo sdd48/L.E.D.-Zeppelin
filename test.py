@@ -10,7 +10,7 @@ FS = 44100
 # duration = 10  # seconds
 #
 # #s = GuiStrip()
-s = LEDStrip(N, "192.168.1.116")
+s = LEDStrip(N, "LEDZeppelin.local")
 #
 # sd.query_devices()
 #

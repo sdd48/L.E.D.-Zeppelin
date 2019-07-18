@@ -1,4 +1,5 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <Adafruit_NeoPixel.h>
 
@@ -7,6 +8,7 @@
 #define SSID "LAN Solo"
 #define PASS "aaronisawesome"
 #define PORT 5120
+#define MDNS_NAME "LEDZeppelin"
 
 #define NUM_LEDS 300
 #define BUF_SIZE (NUM_LEDS*3)
@@ -42,11 +44,16 @@ void setup() {
 
   Serial.print("Connected, IP address: ");
   Serial.println(WiFi.localIP());
+  if (MDNS.begin(MDNS_NAME)) {
+    Serial.println("MDNS responder started");
+  }
+  
   Udp.begin(PORT);
 }
 
 void loop() {
   ESP.wdtFeed();
+  MDNS.update();
   int packetSize = Udp.parsePacket();
   if (packetSize > 0) //got packet
   {
@@ -68,5 +75,3 @@ void loop() {
   delay(1);
 
 }
-
-
