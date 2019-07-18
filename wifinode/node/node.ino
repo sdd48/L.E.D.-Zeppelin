@@ -54,24 +54,33 @@ void setup() {
 void loop() {
   ESP.wdtFeed();
   MDNS.update();
-  int packetSize = Udp.parsePacket();
-  if (packetSize > 0) //got packet
+  // We keep reading until there is nothing left
+  int packetSize = 0;
+  int len = 0;
+  do {
+    packetSize = Udp.parsePacket();
+    if (packetSize) {
+      len = Udp.read(incoming, BUF_SIZE);
+      Serial.println("Got packet");
+    }
+  } while (packetSize);
+  
+
+  if (len == BUF_SIZE) //got Update
   {
     // receive incoming UDP packets
     //Serial.printf("Received %d bytes from %s, port %d\n", packetSize, Udp.remoteIP().toString().c_str(), Udp.remotePort());
-    int len = Udp.read(incoming, BUF_SIZE);
+    //int len = Udp.read(incoming, BUF_SIZE);
     //Serial.printf("UDP packet contents: %s\n", incoming);
+    Serial.println(ESP.getFreeHeap());
+    Serial.println(ESP.getMaxFreeBlockSize());
+    Serial.println(ESP.getHeapFragmentation());
     delay(1);
-    if (len == BUF_SIZE) {
-      //Serial.println("got update");
-      for (int i=0; i < NUM_LEDS; i++) {
-        strip.setPixelColor(i, incoming[3*i], incoming[3*i+1], incoming[3*i+2]);
-      }
-      yield();
-      strip.show();
+    for (int i=0; i < NUM_LEDS; i++) {
+      strip.setPixelColor(i, incoming[3*i], incoming[3*i+1], incoming[3*i+2]);
     }
-    
+    strip.show();
   }
-  delay(1);
+  yield();
 
 }

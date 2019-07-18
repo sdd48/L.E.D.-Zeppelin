@@ -12,10 +12,11 @@ class LEDStrip(strip.Strip):
         self.destip = ip
         # Socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # UDP
-        self.start = time.time()
+        #self.start = time.time()
 
 
     def update(self):
-        if time.time() > self.start + self.UPDATE_INTERVAL:
-          self.sock.sendto(self.strip, (self.destip, self.port))
-          self.start = time.time()
+        self.sock.sendto(self.strip, (self.destip, self.port))
+        # if time.time() > self.start + self.UPDATE_INTERVAL:
+        #   self.sock.sendto(self.strip, (self.destip, self.port))
+        #   self.start = time.time()

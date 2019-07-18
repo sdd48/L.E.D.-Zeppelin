@@ -30,5 +30,6 @@ s = LEDStrip(N, "LEDZeppelin.local")
 #     sd.sleep(100)
 #
 
+s.white()
 while True:
-    s.rainbow(0.01)
+  s.rainbow(0.01)
