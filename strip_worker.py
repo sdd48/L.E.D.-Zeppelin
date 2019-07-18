@@ -6,6 +6,7 @@ import numpy as np
 
 from strips.led_strip import LEDStrip
 from strips.gui_strip import GuiStrip
+from sound_sinks.power_sink import PowerSink
 
 #from strip.strip import Strip
 
@@ -50,6 +51,50 @@ class StripWorker (threading.Thread):
       print(power, avg_pow)
       up2 = (int(res*r), int(res*g), int(res*b))
       strip.setSame(up2)
+
+      strip.update()
+
+    print("Exiting " + self.name)
+
+
+  def stop(self):
+    self.work = False
+
+
+  def addWindow(self, window):
+    self.to_proc.put(window)
+
+
+
+class NewStripWorker (threading.Thread):
+  def __init__(self, swidth, fsample=44100, name="New LED Strip Worker"):
+    threading.Thread.__init__(self, name=name)
+    self.swidth = swidth
+    self.fsample = fsample
+    self.name = name
+    self.to_proc = queue.Queue()
+    self.work = True
+
+  def run(self):
+    nleds = 300
+    
+    sink = PowerSink(nleds, self.fsample, None)
+
+    strip = GuiStrip(nleds)
+
+    print("Starting " + self.name)
+    a = []
+
+    while(self.work):
+      # TODO use condition var
+      while self.to_proc.empty():
+        time.sleep(.001)
+      with self.to_proc.mutex:
+        a = list(self.to_proc.queue)
+        self.to_proc.queue.clear()
+
+      new_lights = sink.consume(strip.strip, a)
+      strip.setSame(new_lights[0])
 
       strip.update()
 
