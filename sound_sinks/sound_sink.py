@@ -20,4 +20,8 @@ class SoundSink(object):
         raise NotImplementedException("This is a base class")
 
 
+    def get_blank_strip(self, numleds):
+        return [[0.0, 0.0, 0.0] for _ in range(numleds)]
+
+
         #analysis, power, low pass, fft, sound sinks use analyses

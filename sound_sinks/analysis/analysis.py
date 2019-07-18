@@ -9,5 +9,5 @@ class Analysis(object):
 	def __init__(self, n):
 		self.numleds = n
 
-	def process(self, arr):
+	def process(self, arr, data):
 		raise NotImplementedError('This is a base class')

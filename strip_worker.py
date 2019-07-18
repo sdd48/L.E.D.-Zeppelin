@@ -80,7 +80,7 @@ class NewStripWorker (threading.Thread):
     
     sink = PowerSink(nleds, self.fsample, None)
 
-    strip = GuiStrip(nleds)
+    strip = LEDStrip(nleds)
 
     print("Starting " + self.name)
     a = []
@@ -88,13 +88,16 @@ class NewStripWorker (threading.Thread):
     while(self.work):
       # TODO use condition var
       while self.to_proc.empty():
+        print('sleeping rip')
         time.sleep(.001)
       with self.to_proc.mutex:
         a = list(self.to_proc.queue)
         self.to_proc.queue.clear()
 
-      new_lights = sink.consume(strip.strip, a)
+      sink.consume(strip.strip, a)
+      new_lights = sink.produce()
       strip.setSame(new_lights[0])
+      #strip.setSame(128, 0, 128)
 
       strip.update()
 
