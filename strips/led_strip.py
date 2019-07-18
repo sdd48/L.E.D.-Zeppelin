@@ -5,7 +5,7 @@ import numpy as np
 from strips import strip
 
 class LEDStrip(strip.Strip):
-    UPDATE_INTERVAL = 0.01 # 10ms
+    UPDATE_INTERVAL = 0.01 # 50ms
     def __init__(self, n=150, ip="LEDZeppelin.local", port=5120):
         super(LEDStrip, self).__init__(n)
         self.port = port
@@ -16,7 +16,8 @@ class LEDStrip(strip.Strip):
 
 
     def update(self):
-        #self.sock.sendto(self.strip, (self.destip, self.port))
-        if time.time() > self.start + self.UPDATE_INTERVAL:
-          self.sock.sendto(self.strip, (self.destip, self.port))
-          self.start = time.time()
+        self.sock.sendto(self.strip, (self.destip, self.port))
+
+        # if time.time() > self.start + self.UPDATE_INTERVAL:
+        #   self.sock.sendto(self.strip, (self.destip, self.port))
+        #   self.start = time.time()

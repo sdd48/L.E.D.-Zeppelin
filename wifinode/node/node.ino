@@ -1,7 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
-#include <Adafruit_NeoPixel.h>
+//#include <Adafruit_NeoPixel.h>
+#include <NeoPixelBus.h>
+#include <NeoPixelAnimator.h>
 
 #define LED_PIN 15
 
@@ -22,9 +24,12 @@ struct UpdatePacket {
 };
 
 UpdatePacket *incoming = nullptr; //heap alloc
-Adafruit_NeoPixel *strip = nullptr;
-WiFiUDP Udp;
 
+const char RESP_OKAY[] = "OKAY";
+const char RESP_FAIL[] = "FAIL";
+
+WiFiUDP Udp;
+NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> *strip = nullptr;
 
 void setup() {
   // Heap alloc our buffer first
@@ -32,6 +37,11 @@ void setup() {
   // put your setup code here, to run once:
   ESP.wdtEnable(WDT_MS);
   Serial.begin(115200);
+
+  strip = new NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>(MAX_LEDS, 0);
+  strip->Begin();
+  strip->ClearTo(RgbColor(0,0,0));
+  strip->Show();
 
   WiFi.begin(SSID, PASS);
   Serial.print("Connecting");
@@ -60,22 +70,22 @@ void loop() {
   if (recvPacket(*incoming)) {
     // receive incoming UDP packets
     // If the packet size is incorrect, we need to create a new strip object
-    if (!strip || strip->numPixels() != incoming->numLeds) {
+    if (!strip || strip->PixelCount() != incoming->numLeds) {
       delete strip;
-      strip = new Adafruit_NeoPixel(incoming->numLeds, LED_PIN, NEO_GRB + NEO_KHZ800);
-      strip->begin();
-//    }
-//    Serial.println(ESP.getFreeHeap());
-//    Serial.println(ESP.getMaxFreeBlockSize());
-//    Serial.println(ESP.getHeapFragmentation());
+      strip = new NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod>(incoming->numLeds, 0);
+      strip->Begin();
+    }
+    Serial.println(ESP.getFreeHeap());
+    Serial.println(ESP.getMaxFreeBlockSize());
+    Serial.println(ESP.getHeapFragmentation());
 
     for (int i=0; i < MAX_LEDS; i++) {
-      strip->setPixelColor(i, incoming->rgb[i][0], incoming->rgb[i][1], incoming->rgb[i][2]);
+      strip->SetPixelColor(i, RgbColor(incoming->rgb[i][0], incoming->rgb[i][1], incoming->rgb[i][2]));
     }
-    strip->show();
+    strip->Show();
   }
-
 }
+
 
 bool recvPacket(UpdatePacket &packet) {
   int packetSize = 0;

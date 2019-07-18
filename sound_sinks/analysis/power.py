@@ -6,8 +6,8 @@ from sound_sinks.analysis.analysis import Analysis
 
 
 class PowerAnalysis(Analysis):
-	def __init__(self, numleds):
-		super(PowerAnalysis, self).__init__(numleds)
+	def __init__(self, numleds, fsample, frame_width):
+		super(PowerAnalysis, self).__init__(numleds, fsample, frame_width)
 		self.lp_alpha = 0.995 #momentum decay
 		self.max_upper = 10.0
 		self.avg_power = 0.0

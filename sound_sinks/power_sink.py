@@ -13,8 +13,8 @@ class PowerSink(SoundSink):
 
 		self.strip_state = super(PowerSink, self).get_blank_strip(numleds)
 
-		self.analysis1 = WheelAnalysis(numleds)
-		self.analysis2 = PowerAnalysis(numleds)
+		self.analysis1 = WheelAnalysis(numleds, fsample, frame_width)
+		self.analysis2 = PowerAnalysis(numleds, fsample, frame_width)
 
 	#fun: nx3 array, data -> nx3 array
 	def consume(self, strip, data):

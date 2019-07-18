@@ -3,8 +3,8 @@ import numpy as np
 from sound_sinks.analysis.analysis import Analysis
 
 class WheelAnalysis(Analysis):
-	def __init__(self, numleds):
-		super(WheelAnalysis, self).__init__(numleds)
+	def __init__(self, numleds, fsample, frame_width):
+		super(WheelAnalysis, self).__init__(numleds, fsample, frame_width)
 		self.counter = 0
 
 	def process(self, strip, data):
