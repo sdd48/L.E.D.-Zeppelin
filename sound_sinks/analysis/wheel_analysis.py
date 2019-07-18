@@ -17,10 +17,8 @@ class WheelAnalysis(Analysis):
 
 
 	def wheel(self, wheelpos):
-		print('Wheelpos is: ', wheelpos)
-
 		wheelpos = 255 - wheelpos
-		
+
 		if wheelpos < 85:
 			return (255 - wheelpos*3, 0, wheelpos*3)
 		elif wheelpos < 170:

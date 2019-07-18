@@ -17,9 +17,8 @@ class PowerAnalysis(Analysis):
 
 		upper = self.max_upper*self.avg_power
 		scale = np.interp(power, [0.0, upper], [0.0, 1.0])
-		
+
 		self.avg_power = self.lp_alpha*self.avg_power + (1.0 - self.lp_alpha)*power
 
-		print(power, self.avg_power)
 
 		return np.array([[int(r*scale), int(g*scale), int(b*scale)] for (r, g, b) in strip])

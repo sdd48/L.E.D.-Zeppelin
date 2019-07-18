@@ -77,7 +77,7 @@ class NewStripWorker (threading.Thread):
 
   def run(self):
     nleds = 300
-    
+
     sink = PowerSink(nleds, self.fsample, None)
 
     strip = LEDStrip(nleds)
@@ -88,7 +88,6 @@ class NewStripWorker (threading.Thread):
     while(self.work):
       # TODO use condition var
       while self.to_proc.empty():
-        print('sleeping rip')
         time.sleep(.001)
       with self.to_proc.mutex:
         a = list(self.to_proc.queue)
