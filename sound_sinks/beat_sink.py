@@ -12,18 +12,10 @@ class BeatSink(SoundSink):
         self.frame = np.zeros(frame_width, dtype=np.float32)
         self.beats = np.zeros((self.numleds, 3))
 
-
-    def consume(self, data):
+    def process(self, data):
         subs = data[0,:].astype(np.float32)
         beat = self.tempo(subs)
         if beat:
             self.beats = 255*np.ones((self.numleds, 3))
         else:
             self.beats /= 1.5
-
-    def canProduce(self):
-        return True
-
-
-    def produce(self):
-        return self.beats

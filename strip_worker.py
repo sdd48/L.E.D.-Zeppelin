@@ -73,34 +73,44 @@ class NewStripWorker (threading.Thread):
     self.fsample = fsample
     self.name = name
     self.to_proc = queue.Queue()
+    self.to_update = queue.Queue()
     self.work = True
 
   def run(self):
     nleds = 300
+    sink = PowerSink(nleds, self.fsample, self.swidth)
 
-    sink = PowerSink(nleds, self.fsample, None)
-
-    strip = LEDStrip(nleds)
+    self.strip = LEDStrip(nleds)
 
     print("Starting " + self.name)
     a = []
 
+    #Add our event timer that will update lights every period
+    self.start_time = time.time()
+    self.update_idx = 0
+    self._updateStrip()
+
+    # Consume the new data and process it
     while(self.work):
-      # TODO use condition var
-      while self.to_proc.empty():
-        time.sleep(.001)
-      with self.to_proc.mutex:
-        a = list(self.to_proc.queue)
-        self.to_proc.queue.clear()
-
-      sink.consume(strip.strip, a)
-      new_lights = sink.produce()
-      strip.setSame(new_lights[0])
-      #strip.setSame(128, 0, 128)
-
-      strip.update()
+      elem = self.to_proc.get()
+      update = sink.process(self.strip, elem)
+      self.to_update.put(update)
 
     print("Exiting " + self.name)
+
+
+  def _updateStrip(self):
+    try:
+      elem = self.to_update.get(block=False)
+      self.strip.setStrip(elem)
+      self.strip.update()
+    except queue.Empty:
+      pass
+    finally:
+      self.update_idx += 1
+      ft = 0.99*self.swidth/float(self.fsample)
+      next = self.start_time + self.update_idx*ft
+      threading.Timer(next - time.time(), self._updateStrip).start()
 
 
   def stop(self):

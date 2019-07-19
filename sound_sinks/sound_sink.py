@@ -8,20 +8,9 @@ class SoundSink(object):
         self.frame_width = frame_width
 
 
-    def consume(self, data):
-        raise NotImplementedException("This is a base class")
-
-    def canProduce(self):
-        return False
-
-
-    def produce(self):
-        #return [(0, 0, 0) for i in range(self.numleds)]
+    def process(self, data):
         raise NotImplementedException("This is a base class")
 
 
     def get_blank_strip(self, numleds):
         return [[0.0, 0.0, 0.0] for _ in range(numleds)]
-
-
-        #analysis, power, low pass, fft, sound sinks use analyses
