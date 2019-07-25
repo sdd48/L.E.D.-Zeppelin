@@ -5,6 +5,7 @@ import sys
 import strip_worker
 import sounddevice as sd
 import numpy as np
+from scipy import signal
 
 SAMPLES_PER_WINDOW = 1024
 FS = 44100
@@ -19,8 +20,9 @@ worker.start()
 print(sd.query_devices())
 print(sd.query_devices(device, 'input'))
 
+
 def input_sound(indata, outdata, frames, sd_time, status):
-  outdata[:] = indata
+  outdata[:,:2] = indata[:,:2]
   #print(sd_time.inputBufferAdcTime)
   worker.addWindow(indata[:,0].flatten())
 

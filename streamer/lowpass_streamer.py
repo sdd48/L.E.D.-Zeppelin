@@ -11,11 +11,12 @@ class LowPassStreamer(Streamer):
     self.cutt_off = cutt_off
     cutt = cutt_off/(self.fsample / 2.0)
     self.filter = signal.butter(order, cutt, 'lowpass')
+    self.zi = signal.lfilter_zi(*self.filter)
     self.res = None
 
   def _procInput(self, data):
     b, a = self.filter
-    self.res = signal.lfilter(b, a, data)
+    self.res, self.zi = signal.lfilter(b, a, data, zi=self.zi)
 
   def outputReady(self):
     return self.res is not None

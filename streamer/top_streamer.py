@@ -13,7 +13,7 @@ class TopStreamer(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
 		super(TopStreamer, self).__init__()
 		self.numleds = numleds
-		self.lowpass = LowPassStreamer(fsample, 250., order=6)
+		self.lowpass = LowPassStreamer(fsample, 200., order=6)
 		self.power = PowerStreamer()
 		self.lowpass.connect(self.power)
 		self.wheel = WheelStreamer(self.numleds)
