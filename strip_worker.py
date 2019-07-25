@@ -20,9 +20,9 @@ class NewStripWorker (threading.Thread):
     self.work = True
 
   def run(self):
-    nleds = 300
+    nleds = 150
     stream = BassPower(nleds, self.fsample, self.swidth)
-    #stream = SoundMeter(nleds, self.fsample, self.swidth)
+    stream = SoundMeter(nleds, self.fsample, self.swidth)
     self.strip = LEDStrip(nleds)
 
     #Add our event timer that will update lights every period

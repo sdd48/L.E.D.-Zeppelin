@@ -11,7 +11,6 @@ class GammaStreamer(Streamer):
 
   # Reference https://github.com/Makuna/NeoPixelBus/blob/master/src/internal/NeoGamma.h
   def _procInput(self, data):
-    print(data)
     self.res = np.power(data, 1./.45)
 
   def outputReady(self):

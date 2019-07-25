@@ -16,7 +16,7 @@ class BassPower(Streamer):
 		super(BassPower, self).__init__()
 		self.numleds = numleds
 		self.lowpass = LowPassStreamer(fsample, 200., order=6)
-		self.power = PowerStreamer(alpha=0.98, max_upper=7.)
+		self.power = PowerStreamer(alpha=0.98, max_upper=3.)
 		self.gamma_correct = GammaStreamer()
 		self.wheel = WheelStreamer(self.numleds)
 		# To prevent seizures...

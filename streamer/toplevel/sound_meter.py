@@ -15,11 +15,13 @@ class SoundMeter(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
 		super(SoundMeter, self).__init__()
 		self.numleds = numleds
-		self.power = PowerStreamer(alpha=0.98, max_upper=5.)
+		self.power = PowerStreamer(alpha=0.98, max_upper=3.)
 		# To prevent seizures...
 		self.smooth = RunningAverageStreamer(alpha=1.0)
 		self.power.connect(self.smooth)
-		self.smooth2 = RunningAverageStreamer(alpha=0.8)
+		self.smooth2 = RunningAverageStreamer(alpha=0.3)
+		self.gamma = GammaStreamer()
+		self.smooth2.connect(self.gamma)
 
 		#self.out = QueueStreamer()
 		#self.power.connect(self.out)
@@ -33,8 +35,13 @@ class SoundMeter(Streamer):
 	def output(self):
 		scale =  self.smooth.output()
 		num_leds = int(np.interp(scale, [0.0, 1.0], [0.0, self.numleds]))
-		print(scale)
-		ret = np.zeros((self.numleds, 3))
-		ret[:num_leds,2] = 255
-		self.smooth2.input(ret)
-		return self.smooth2.output()
+		# Make the intesity map
+		half = self.numleds // 2
+		output = np.zeros((self.numleds, 3))
+		output[:half,0] =  np.linspace(0, 1.0, half) # red
+		output[:half,1] = 1.0 # Green
+		output[half:,0] =  1.0
+		output[half:,1] = np.linspace(1.0, 0, half)
+		output[num_leds:,:] = 0
+		self.smooth2.input(output)
+		return 255*self.gamma.output()
