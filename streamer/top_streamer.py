@@ -7,19 +7,23 @@ from streamer.streamer import Streamer
 from streamer.power_streamer import PowerStreamer
 from streamer.queue_streamer import QueueStreamer
 from streamer.wheel_streamer import WheelStreamer
+from streamer.lowpass_streamer import LowPassStreamer
 
 class TopStreamer(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
 		super(TopStreamer, self).__init__()
 		self.numleds = numleds
+		self.lowpass = LowPassStreamer(fsample, 250., order=6)
 		self.power = PowerStreamer()
+		self.lowpass.connect(self.power)
 		self.wheel = WheelStreamer(self.numleds)
 		self.out = QueueStreamer()
 		self.power.connect(self.out)
 
 	def input(self, data):
-		self.power.input(data)
+		#self.power.input(data)
 		self.wheel.input(data)
+		self.lowpass.input(data)
 
 	def outputReady(self):
 		return self.out.outputReady() and self.wheel.outputReady()

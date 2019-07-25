@@ -8,7 +8,8 @@ import numpy as np
 
 SAMPLES_PER_WINDOW = 1024
 FS = 44100
-device=4
+device=6
+#output_device
 # Create strip thread
 #worker = strip_worker.StripWorker(SAMPLES_PER_WINDOW, FS, "Light Strip Worker")
 worker = strip_worker.NewStripWorker(SAMPLES_PER_WINDOW, FS, "New Light Strip Worker")
@@ -18,11 +19,15 @@ worker.start()
 print(sd.query_devices())
 print(sd.query_devices(device, 'input'))
 
-def print_sound(indata, frames, time, status):
-  worker.addWindow(indata.flatten())
+def input_sound(indata, outdata, frames, sd_time, status):
+  outdata[:] = indata
+  #print(sd_time.inputBufferAdcTime)
+  worker.addWindow(indata[:,0].flatten())
 
+def output_sound(outdata, frames, time, status):
+  pass
 
-with sd.InputStream(callback=print_sound, samplerate=FS, blocksize=SAMPLES_PER_WINDOW, latency='low', channels=1):
+with sd.Stream(callback=input_sound, samplerate=FS, device=device, blocksize=SAMPLES_PER_WINDOW, latency='low'):
   while True:
     sd.sleep(100)
 

@@ -8,8 +8,8 @@ from streamer.streamer import Streamer
 class PowerStreamer(Streamer):
 	def __init__(self):
 		super(PowerStreamer, self).__init__()
-		self.lp_alpha = 0.99 #momentum decay
-		self.max_upper = 10.0
+		self.lp_alpha = 0.9 #momentum decay
+		self.max_upper = 7.0
 		self.avg_power = 0.0
 		self.next = None
 
