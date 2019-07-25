@@ -6,7 +6,7 @@ import numpy as np
 
 from strips.led_strip import LEDStrip
 from strips.gui_strip import GuiStrip
-from streamer.top_streamer import TopStreamer
+from streamer.toplevel.bass_power import BassPower
 
 class NewStripWorker (threading.Thread):
   def __init__(self, swidth, fsample=44100, name="New LED Strip Worker"):
@@ -20,7 +20,7 @@ class NewStripWorker (threading.Thread):
 
   def run(self):
     nleds = 300
-    stream = TopStreamer(nleds, self.fsample, self.swidth)
+    stream = BassPower(nleds, self.fsample, self.swidth)
     self.strip = LEDStrip(nleds)
 
     #Add our event timer that will update lights every period

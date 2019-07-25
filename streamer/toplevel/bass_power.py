@@ -8,17 +8,26 @@ from streamer.power_streamer import PowerStreamer
 from streamer.queue_streamer import QueueStreamer
 from streamer.wheel_streamer import WheelStreamer
 from streamer.lowpass_streamer import LowPassStreamer
+from streamer.gamma_streamer import GammaStreamer
+from streamer.runningavg_streamer import RunningAverageStreamer
 
-class TopStreamer(Streamer):
+class BassPower(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
-		super(TopStreamer, self).__init__()
+		super(BassPower, self).__init__()
 		self.numleds = numleds
 		self.lowpass = LowPassStreamer(fsample, 200., order=6)
-		self.power = PowerStreamer()
-		self.lowpass.connect(self.power)
+		self.power = PowerStreamer(alpha=0.98, max_upper=4.)
+		self.gamma_correct = GammaStreamer()
 		self.wheel = WheelStreamer(self.numleds)
-		self.out = QueueStreamer()
-		self.power.connect(self.out)
+		# To prevent seizures...
+		self.smooth = RunningAverageStreamer(alpha=0.5)
+
+		self.lowpass.connect(self.power)
+		self.power.connect(self.smooth)
+		self.smooth.connect(self.gamma_correct)
+
+		#self.out = QueueStreamer()
+		#self.power.connect(self.out)
 
 	def input(self, data):
 		#self.power.input(data)
@@ -26,10 +35,10 @@ class TopStreamer(Streamer):
 		self.lowpass.input(data)
 
 	def outputReady(self):
-		return self.out.outputReady() and self.wheel.outputReady()
+		return self.gamma_correct.outputReady() and self.wheel.outputReady()
 
 	def output(self):
 		wheel = self.wheel.output()
-		scale =  self.out.output()
+		scale =  self.gamma_correct.output()
 		ret = scale*wheel
 		return ret.astype(int)
