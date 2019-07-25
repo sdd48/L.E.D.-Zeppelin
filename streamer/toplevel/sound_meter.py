@@ -15,7 +15,7 @@ class SoundMeter(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
 		super(SoundMeter, self).__init__()
 		self.numleds = numleds
-		self.power = PowerStreamer(alpha=0.98, max_upper=3.)
+		self.power = PowerStreamer(alpha=0.98, max_upper=2.)
 		# To prevent seizures...
 		self.smooth = RunningAverageStreamer(alpha=1.0)
 		self.power.connect(self.smooth)
