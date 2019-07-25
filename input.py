@@ -10,6 +10,10 @@ from scipy import signal
 SAMPLES_PER_WINDOW = 1024
 FS = 44100
 device=6
+
+# How much latency to update the lightstrip
+latency_comp = 0.02
+frame_counter = round(latency_comp*FS/SAMPLES_PER_WINDOW)
 #output_device
 # Create strip thread
 #worker = strip_worker.StripWorker(SAMPLES_PER_WINDOW, FS, "Light Strip Worker")
@@ -22,7 +26,11 @@ print(sd.query_devices(device, 'input'))
 
 
 def input_sound(indata, outdata, frames, sd_time, status):
-  outdata[:,:2] = indata[:,:2]
+  global frame_counter
+  if frame_counter == 0:
+    outdata[:,:2] = indata[:,:2]
+  else:
+    frame_counter -= 1
   #print(sd_time.inputBufferAdcTime)
   worker.addWindow(indata[:,0].flatten())
 

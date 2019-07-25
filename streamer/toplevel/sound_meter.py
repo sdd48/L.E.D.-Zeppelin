@@ -11,34 +11,30 @@ from streamer.lowpass_streamer import LowPassStreamer
 from streamer.gamma_streamer import GammaStreamer
 from streamer.runningavg_streamer import RunningAverageStreamer
 
-class BassPower(Streamer):
+class SoundMeter(Streamer):
 	def __init__(self, numleds, fsample, frame_width):
-		super(BassPower, self).__init__()
+		super(SoundMeter, self).__init__()
 		self.numleds = numleds
-		self.lowpass = LowPassStreamer(fsample, 200., order=6)
-		self.power = PowerStreamer(alpha=0.98, max_upper=7.)
-		self.gamma_correct = GammaStreamer()
-		self.wheel = WheelStreamer(self.numleds)
+		self.power = PowerStreamer(alpha=0.98, max_upper=5.)
 		# To prevent seizures...
-		self.smooth = RunningAverageStreamer(alpha=0.8)
-
-		self.lowpass.connect(self.power)
+		self.smooth = RunningAverageStreamer(alpha=1.0)
 		self.power.connect(self.smooth)
-		self.smooth.connect(self.gamma_correct)
+		self.smooth2 = RunningAverageStreamer(alpha=0.8)
 
 		#self.out = QueueStreamer()
 		#self.power.connect(self.out)
 
 	def input(self, data):
-		#self.power.input(data)
-		self.wheel.input(data)
-		self.lowpass.input(data)
+		self.power.input(data)
 
 	def outputReady(self):
-		return self.gamma_correct.outputReady() and self.wheel.outputReady()
+		return self.smooth.outputReady()
 
 	def output(self):
-		wheel = self.wheel.output()
-		scale =  self.gamma_correct.output()
-		ret = scale*wheel
-		return ret.astype(int)
+		scale =  self.smooth.output()
+		num_leds = int(np.interp(scale, [0.0, 1.0], [0.0, self.numleds]))
+		print(scale)
+		ret = np.zeros((self.numleds, 3))
+		ret[:num_leds,2] = 255
+		self.smooth2.input(ret)
+		return self.smooth2.output()

@@ -17,7 +17,7 @@ class RunningAverageStreamer(Streamer):
       self.res = data
     else:
       self.res = (1.-self.alpha)*self.prev + self.alpha*data
-      self.prev = np.copy(data)
+      self.prev = np.copy(self.res)
 
   def outputReady(self):
     return self.res is not None

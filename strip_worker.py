@@ -7,6 +7,7 @@ import numpy as np
 from strips.led_strip import LEDStrip
 from strips.gui_strip import GuiStrip
 from streamer.toplevel.bass_power import BassPower
+from streamer.toplevel.sound_meter import SoundMeter
 
 class NewStripWorker (threading.Thread):
   def __init__(self, swidth, fsample=44100, name="New LED Strip Worker"):
@@ -21,6 +22,7 @@ class NewStripWorker (threading.Thread):
   def run(self):
     nleds = 300
     stream = BassPower(nleds, self.fsample, self.swidth)
+    #stream = SoundMeter(nleds, self.fsample, self.swidth)
     self.strip = LEDStrip(nleds)
 
     #Add our event timer that will update lights every period
