@@ -11,6 +11,9 @@ class AlternatingStreamer(Streamer):
 		self.state = 0 #0 to zero out evens, 1 to zero out odds
 		self.next = None
 
+		self.counter = 0
+		self.switch_length = 10
+
 		whole_chunks = int(nleds / width)
 		rem = nleds % width
 		even_split = whole_chunks % 2 == 0
@@ -25,10 +28,10 @@ class AlternatingStreamer(Streamer):
 	def _procInput(self, data):
 		data[self.flip_arr] = [[0,0,0]]*sum(self.flip_arr)
 
-		self.flip_arr = [not e for e in self.flip_arr]
-		
+		self.counter += 1
+		if self.counter % self.switch_length == 0:
+			self.flip_arr = [not e for e in self.flip_arr]
 		self.next = data
-
 
 	def outputReady(self):
 		return self.next is not None
