@@ -10,7 +10,7 @@ from scipy import signal
 
 SAMPLES_PER_WINDOW = 1024
 FS = 44100
-device=6
+device=9
 
 # How much latency to update the lightstrip
 latency_comp = 0.02
