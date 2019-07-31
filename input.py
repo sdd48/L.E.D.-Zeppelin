@@ -29,15 +29,15 @@ print(sd.query_devices(device, 'input'))
 
 def input_sound(indata, outdata, frames, sd_time, status):
   global windows
-  windows.append(indata)
-  outdata[:,:2] = windows.popleft()[:,:2]
+  #windows.append(indata)
+  #outdata[:,:2] = windows.popleft()[:,:2]
   #print(sd_time.inputBufferAdcTime)
   worker.addWindow(indata[:,0].flatten())
 
 def output_sound(outdata, frames, time, status):
   pass
 
-with sd.Stream(callback=input_sound, samplerate=FS, device=device, blocksize=SAMPLES_PER_WINDOW, latency='low'):
+with sd.Stream(callback=input_sound, samplerate=FS, device=device, blocksize=SAMPLES_PER_WINDOW, latency=0.001):
   while True:
     sd.sleep(100)
 

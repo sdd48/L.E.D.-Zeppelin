@@ -28,7 +28,8 @@ class NewStripWorker (threading.Thread):
     #Add our event timer that will update lights every period
     self.start_time = time.time()
     self.update_idx = 0
-    self._updateStrip()
+    thread = threading.Thread(target = self._updateStrip)
+    thread.start()
 
     # Consume the new data and process it
     while(self.work):
@@ -38,19 +39,15 @@ class NewStripWorker (threading.Thread):
         self.to_update.put(stream.output())
 
 
+  # We want to update at the same rate, without getting too behind
   def _updateStrip(self):
-    try:
-      elem = self.to_update.get(block=False)
+    ft = 0.75*self.swidth/float(self.fsample)
+    while True:
+      print(self.to_update.qsize())
+      elem = self.to_update.get(block=True)
       self.strip.setStrip(elem)
       self.strip.update()
-    except queue.Empty:
-      pass
-    finally:
-      self.update_idx += 1
-      ft = 0.95*self.swidth/float(self.fsample)
-      next = self.start_time + self.update_idx*ft
-      threading.Timer(next - time.time(), self._updateStrip).start()
-
+      time.sleep(ft)
 
   def stop(self):
     self.work = False
