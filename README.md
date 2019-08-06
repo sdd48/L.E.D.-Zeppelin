@@ -1,5 +1,6 @@
-#LED Music Display
-##1) Supplies: 
+# LED Music Display
+
+## Supplies: 
 
 -[Microcontroler, ESP8266](https://www.amazon.com/HiLetgo-Internet-Development-Wireless-Micropython/dp/B010O1G1ES/ref=asc_df_B010O1G1ES/?tag=hyprod-20&linkCode=df0&hvadid=309818716690&hvpos=1o1&hvnetw=g&hvrand=11462262898223770340&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9005070&hvtargid=aud-643565131866:pla-361876718784&psc=1)
 
@@ -11,20 +12,20 @@
 
 
 
-##2) Downloads
+## Downloads
 -[Arduino IDE](https://www.arduino.cc/en/main/software)
 
 -[Adafruit Neopixel Drivers](https://github.com/adafruit/Adafruit_NeoPixel)
 
-##3) Assembly
-###Hardware
+## Assembly
+### Hardware
 -Tie the positive wire from the outlet input to L on the power adapted, the neutral wire to N and the ground to the ground symbol
 
 -Tie one of the red positive wire from the lights to the +V output on the adapter and the white negative wire to -V
 
 -Solder the other red positive wire from the lights to VIN on the MCU, the white one to ground and the middle green data pin to RX (NOT TX)
 
-###Software
+### Software
 -Select "Node MCU 1.0 (ESP-12 Module)" from tools->boards in the arduino IDE
 
 -Open node.ino from the github project 
