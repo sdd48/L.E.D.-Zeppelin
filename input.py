@@ -10,7 +10,9 @@ from scipy import signal
 
 SAMPLES_PER_WINDOW = 1024
 FS = 44100
-device=9
+
+device = [d['name'] == 'pulse' for d in list(sd.query_devices())].index(True)
+
 
 # How much latency to update the lightstrip
 latency_comp = 0.02
